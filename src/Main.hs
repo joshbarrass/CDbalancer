@@ -5,12 +5,7 @@ import Data.List
 import FileUtils
 import Disc
 import SimpleBalance
-
-blankDisc :: Disc
-blankDisc = Disc (500*1024*1024) []
-
-makeDiscs' :: [File] -> [Disc]
-makeDiscs' = makeDiscs blankDisc
+import ArgParsing
 
 largerThanDisc :: Disc -> File -> Bool
 largerThanDisc disc f = (filesize f > maxSize disc)
@@ -20,8 +15,14 @@ anyLargerThanDisc disc fs = any (==True) $ map (largerThanDisc disc) fs
 
 main :: IO ()
 main = do
-  args <- getArgs
-  let fn = head args
+  -- args <- getArgs
+  -- let fn = head args
+  blankDisc <- getBlankDisc
+  
+  let makeDiscs' :: [File] -> [Disc]
+      makeDiscs' = makeDiscs blankDisc
+
+  fn <- getFileList
   input <- readFile fn
   let fileList = lines input
   fileExistsList <- mapM doesFileExist fileList
