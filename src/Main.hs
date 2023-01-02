@@ -1,6 +1,5 @@
 module Main where
 
-import System.Environment
 import Data.List
 import FileUtils
 import Disc
@@ -8,10 +7,10 @@ import SimpleBalance
 import ArgParsing
 
 largerThanDisc :: Disc -> File -> Bool
-largerThanDisc disc f = (filesize f > maxSize disc)
+largerThanDisc disc f = filesize f > maxSize disc
 
 anyLargerThanDisc :: Disc -> [File] -> Bool
-anyLargerThanDisc disc fs = any (==True) $ map (largerThanDisc disc) fs
+anyLargerThanDisc disc = any (largerThanDisc disc)
 
 main :: IO ()
 main = do
@@ -52,7 +51,7 @@ main = do
       let allFiles :: [[File]]
           allFiles = map files discs
       let filenameList :: [[String]]
-          filenameList = map (map (filename)) allFiles
+          filenameList = map (map filename) allFiles
       let perDiscOutput :: [String]
           perDiscOutput = map (intercalate "\n") filenameList
       let enum = zip [1..] perDiscOutput
