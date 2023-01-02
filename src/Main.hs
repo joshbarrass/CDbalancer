@@ -13,14 +13,10 @@ largerThanDisc disc f = (filesize f > maxSize disc)
 anyLargerThanDisc :: Disc -> [File] -> Bool
 anyLargerThanDisc disc fs = any (==True) $ map (largerThanDisc disc) fs
 
-prefix :: String
-prefix = "disc_"
-
 main :: IO ()
 main = do
-  -- args <- getArgs
-  -- let fn = head args
   blankDisc <- getBlankDisc
+  prefix <- getPrefix
   
   let makeDiscs' :: [File] -> [Disc]
       makeDiscs' = makeDiscs blankDisc
