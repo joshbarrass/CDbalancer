@@ -24,9 +24,16 @@ main = do
   let fn = head args
   input <- readFile fn
   let fileList = lines input
-  allExist <- allFilesExist fileList
+  fileExistsList <- mapM doesFileExist fileList
+  let allExist = all (==True) fileExistsList
+  
   if not allExist then do
-    putStrLn "One or more specified files do not exist. Aborting..."
+    putStrLn "One or more specified files do not exist:"
+    let existanceMap = zip fileExistsList fileList
+    let nonExistent = map snd $ filter (not . fst) existanceMap
+    let output = "  " ++ intercalate "\n  " nonExistent
+    putStrLn output
+    putStrLn "Aborting..."
   else do
     fileSizes <- mapM getFileSize fileList
     let fs = zip fileList fileSizes
