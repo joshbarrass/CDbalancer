@@ -13,6 +13,9 @@ largerThanDisc disc f = (filesize f > maxSize disc)
 anyLargerThanDisc :: Disc -> [File] -> Bool
 anyLargerThanDisc disc fs = any (==True) $ map (largerThanDisc disc) fs
 
+prefix :: String
+prefix = "disc_"
+
 main :: IO ()
 main = do
   -- args <- getArgs
@@ -54,5 +57,6 @@ main = do
           filenameList = map (map (filename)) allFiles
       let perDiscOutput :: [String]
           perDiscOutput = map (intercalate "\n") filenameList
-      let output = intercalate "\n-----\n" perDiscOutput
-      putStrLn output
+      let enum = zip [1..] perDiscOutput
+
+      mapM_ (\(i, content) -> writeFile (prefix ++ show i) content) enum
