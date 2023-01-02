@@ -21,12 +21,15 @@ anyLargerThanDisc disc fs = any (==True) $ map (largerThanDisc disc) fs
 main :: IO ()
 main = do
   args <- getArgs
-  allExist <- allFilesExist args
+  let fn = head args
+  input <- readFile fn
+  let fileList = lines input
+  allExist <- allFilesExist fileList
   if not allExist then do
     putStrLn "One or more specified files do not exist. Aborting..."
   else do
-    fileSizes <- mapM getFileSize args
-    let fs = zip args fileSizes
+    fileSizes <- mapM getFileSize fileList
+    let fs = zip fileList fileSizes
 
     if anyLargerThanDisc blankDisc fs then do
       putStrLn "One or more specified files is larger than the disc. Aborting..."
