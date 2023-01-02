@@ -39,7 +39,12 @@ main = do
     let fs = zip fileList fileSizes
 
     if anyLargerThanDisc blankDisc fs then do
-      putStrLn "One or more specified files is larger than the disc. Aborting..."
+      putStrLn "One or more specified files is larger than the disc:"
+      let sizeMap = zip fileSizes fileList
+      let tooBig = map (\(s, f) -> f ++ "  (" ++ show s ++ ")") $ filter ((> maxSize blankDisc) . fst) sizeMap
+      let output = "  " ++ intercalate "\n  " tooBig
+      putStrLn output
+      putStrLn "Aborting..."
     else do
       let discs = makeDiscs' fs
       let allFiles :: [[File]]
