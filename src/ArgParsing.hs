@@ -4,8 +4,10 @@ module ArgParsing
   ,getBlankDisc
   ,getFileList
   ,getPrefix
+  ,checkForHelp
   ) where
 
+import Control.Monad (when)
 import System.Environment (getArgs)
 import System.Console.Docopt
 
@@ -16,6 +18,7 @@ patterns = [docopt|
 CDbalancer
 
 Usage:
+  CDbalance --help
   CDbalancer [--disc-size=<size>] [--output-prefix=<prefix>] <file_list>
 
 Options:
@@ -45,3 +48,9 @@ getPrefix :: IO String
 getPrefix = do
   args <- getDocopt
   return $ getArgWithDefault args "disc" (longOption "output-prefix")
+
+checkForHelp :: IO ()
+checkForHelp = do
+  args <- getDocopt
+  when (args `isPresent` (longOption "help")) $ do
+    exitWithUsage patterns

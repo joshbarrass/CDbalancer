@@ -15,6 +15,8 @@ anyLargerThanDisc disc fs = any (==True) $ map (largerThanDisc disc) fs
 
 main :: IO ()
 main = do
+  checkForHelp
+  
   blankDisc <- getBlankDisc
   prefix <- getPrefix
   
