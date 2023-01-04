@@ -48,8 +48,9 @@ main = do
       putStrLn output
       putStrLn "Aborting..."
     else do
+      outputFn <- getOutputType
       let discs = makeDiscs' fs
-      let output = filelistOutput discs
+      let output = outputFn discs
       let enum = zip [1..] output
 
       mapM_ (\(i, content) -> writeFile (prefix ++ show i) content) enum
