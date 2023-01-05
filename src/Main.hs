@@ -5,6 +5,7 @@ import FileUtils
 import Disc
 import SimpleBalance
 import ArgParsing
+import Output
 
 largerThanDisc :: Disc -> File -> Bool
 largerThanDisc disc f = filesize f > maxSize disc
@@ -47,13 +48,9 @@ main = do
       putStrLn output
       putStrLn "Aborting..."
     else do
+      outputFn <- getOutputType
       let discs = makeDiscs' fs
-      let allFiles :: [[File]]
-          allFiles = map files discs
-      let filenameList :: [[String]]
-          filenameList = map (map filename) allFiles
-      let perDiscOutput :: [String]
-          perDiscOutput = map (intercalate "\n") filenameList
-      let enum = zip [1..] perDiscOutput
+      let output = outputFn discs
+      let enum = zip [1..] output
 
       mapM_ (\(i, content) -> writeFile (prefix ++ show i) content) enum
