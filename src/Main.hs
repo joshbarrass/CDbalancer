@@ -3,7 +3,6 @@ module Main where
 import Data.List
 import FileUtils
 import Disc
-import SimpleBalance
 import ArgParsing
 import Output
 
@@ -19,7 +18,7 @@ main = do
   
   blankDisc <- getBlankDisc
   prefix <- getPrefix
-  
+  makeDiscs <- getBalancingType
   let makeDiscs' :: [File] -> [Disc]
       makeDiscs' = makeDiscs blankDisc
 
