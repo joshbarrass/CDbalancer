@@ -50,6 +50,12 @@ main = do
     else do
       outputFn <- getOutputType
       let discs = makeDiscs' fs
+      -- display percentage usage
+      let percentages = map (\d -> fromIntegral (discUsed d) / fromIntegral (maxSize d)) discs
+      mapM_ (\(i, percent) -> putStrLn $ "Disc " ++ show i ++ ": " ++ show (percent*100) ++ "%") $ zip [1..] percentages
+      -- mean percentage is also the total usage
+      let totalPercent = sum percentages / fromIntegral (length percentages)
+      putStrLn $ "Total usage: " ++ show (totalPercent * 100) ++ "%"
       let output = outputFn discs
       let enum = zip [1..] output
 
