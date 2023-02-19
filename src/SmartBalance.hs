@@ -20,8 +20,8 @@ makeDisc disc [] = (disc, [])
 makeDisc disc (f:fs)
   | filesize f <= discRemaining disc = makeDisc (Disc size $ f : files') fs
   | otherwise = let
-      (disc, remaining) = makeDisc disc fs
-      in (disc, f : remaining)
+      (disc', remaining) = makeDisc disc fs
+      in (disc', f : remaining)
   where size = maxSize disc
         files' = files disc
 
