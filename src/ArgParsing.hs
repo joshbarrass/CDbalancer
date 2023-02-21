@@ -18,6 +18,7 @@ import Output
 
 import SimpleBalance
 import SmartBalance
+import SortedSmart
 
 patterns :: Docopt
 patterns = [docopt|
@@ -31,7 +32,7 @@ Options:
   -h --help                    Show this screen.
   -s --disc-size=<size>        Size of the disc in bytes [default: 524288000].
   -p --output-prefix=<prefix>  Set the prefix of the output files [default: disc].
-  -b --balancing=<type>        Choose balancing type. Valid options: simple, smart. [default: smart]
+  -b --balancing=<type>        Choose balancing type. Valid options: simple, smart, sortsmart. [default: sortsmart]
   -g --graft-points            Write output in graft-points format, for compatibility with mkisofs
 |]
 
@@ -74,12 +75,13 @@ getOutputType = do
 getBalancingType :: IO (Disc -> [File] -> [Disc])
 getBalancingType = do
   args <- getDocopt
-  let balancingType = getArgWithDefault args "smart" (longOption "balancing")
+  let balancingType = getArgWithDefault args "sortsmart" (longOption "balancing")
   -- case to make adding future formats easier
   case balancingType of
     "simple" -> printAndReturn "Using simple balancing." SimpleBalance.makeDiscs
     "smart" -> printAndReturn "Using smart balancing." SmartBalance.makeDiscs
-    _ -> printAndReturn "Unknown balancing type. Defaulting to smart balancing." SmartBalance.makeDiscs
+    "sortsmart" -> printAndReturn "Using sortsmart balancing." SortedSmart.makeDiscs
+    _ -> printAndReturn "Unknown balancing type. Defaulting to sortsmart balancing." SortedSmart.makeDiscs
   where printAndReturn :: String -> b -> IO b
         printAndReturn toPrint toReturn = do
           putStrLn toPrint
