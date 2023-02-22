@@ -1,0 +1,49 @@
+name: Haskell CI
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-haskell@v1
+      with:
+        ghc-version: '8.10.3'
+        cabal-version: '3.2'
+
+    - name: Cache
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-cabal
+      with:
+        path: ~/.cabal
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+
+    - name: Install dependencies
+      run: |
+        cabal new-update
+        cabal new-build --only-dependencies --enable-tests --enable-benchmarks
+    - name: Build
+      run: cabal new-build --enable-tests --enable-benchmarks all
+    - name: Run tests
+      run: cabal new-test all
+    - name: Get build location
+      run: echo "GITHUB_BUILD_OUT=$(cabal new-exec which CDbalancer)" >> $GITHUB_ENV
+    - name: Create Release
+      uses: softprops/action-gh-release@v0.1.14
+      with:
+        files: "${{GITHUB_BUILD_OUT}}"
+        fail_on_unmatched_files: true
